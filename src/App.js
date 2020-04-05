@@ -18,6 +18,7 @@ class App extends Component{
 
     state = {
         food: getRandomCoordinates(),
+        speed: 200,
         direction: 'RIGHT',
         snakeDots :[
             [0,0],
@@ -26,10 +27,11 @@ class App extends Component{
     };
 
     componentDidMount(){
+        setInterval(this.moveSnake, this.state.speed);
         document.onkeydown = this.onKeyDown;
     }
 
-    onKeyDown = e =>{
+    onKeyDown = (e) =>{
         e = e || window.event;
         switch (e.keyCode) {
             case 38:
@@ -45,7 +47,33 @@ class App extends Component{
                 this.setState({direction: 'RIGHT'});
                 break;
         }
-    }
+    };
+
+    moveSnake = () =>{
+        let dots = [...this.state.snakeDots];
+        let head = dots[dots.length - 1];
+
+        switch (this.state.direction) {
+            case 'RIGHT':
+                head = [head[0] + 2, head[1]];
+                break;
+            case 'LEFT':
+                head = [head[0] - 2, head[1]];
+                break;
+            case 'DOWN':
+                head = [head[0], head[1] + 2];
+                break;
+            case 'UP':
+                head = [head[0], head[1] - 2];
+                break;
+        }
+
+        dots.push(head);
+        dots.shift();
+        this.setState({
+            snakeDots: dots
+        })
+    };
 
     render() {
     return (
