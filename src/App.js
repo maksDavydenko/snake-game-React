@@ -17,7 +17,7 @@ const getRandomCoordinates = () =>{
 
 const initialState = {
     food: getRandomCoordinates(),
-    speed: 200,
+    speed: 80,
     direction: 'RIGHT',
     snakeDots :[
         [0,0],
@@ -41,19 +41,18 @@ class App extends Component{
     }
     onKeyDown = e =>{
         e = e || window.event;
-        switch (e.keyCode) {
-            case 38:
-                this.setState({direction : 'UP'});
-                break;
-            case 40:
-                this.setState({direction : 'DOWN'});
-                break;
-            case 37:
-                this.setState({direction: 'LEFT'});
-                break;
-            case 39:
-                this.setState({direction: 'RIGHT'});
-                break;
+
+        if(this.state.direction !== 'RIGHT' && e.keyCode == 37){
+            this.setState({direction : 'LEFT'});
+
+        } if(this.state.direction !== 'LEFT' && e.keyCode == 39){
+            this.setState({direction : 'RIGHT'});
+
+        } if(this.state.direction !== 'UP' && e.keyCode == 40){
+            this.setState({direction : 'DOWN'});
+
+        } if(this.state.direction !== 'DOWN' && e.keyCode == 38){
+            this.setState({direction : 'UP'});
         }
     };
 
@@ -96,7 +95,7 @@ class App extends Component{
         let head = snake[snake.length - 1];
         snake.pop();
         snake.forEach(dot =>{
-            if(head[0] == dot[0] && head[1] == dot[1]){
+            if(head[0] == dot[0] && head[1] == dot[1] ){
                 this.onGameOver();
             }
         })
@@ -132,7 +131,7 @@ class App extends Component{
 
 
     onGameOver(){
-        alert(`Game Over, Snake length is ${this.state.snakeDots.length}`);
+        alert(`Game Over`);
         this.setState(initialState)
     }
 
