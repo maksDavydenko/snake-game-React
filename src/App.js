@@ -14,23 +14,29 @@ const getRandomCoordinates = () =>{
     return [x,y];
 };
 
+
+const initialState = {
+    food: getRandomCoordinates(),
+    speed: 200,
+    direction: 'RIGHT',
+    snakeDots :[
+        [0,0],
+        [2,0]
+    ]
+
+};
 class App extends Component{
 
-    state = {
-        food: getRandomCoordinates(),
-        speed: 200,
-        direction: 'RIGHT',
-        snakeDots :[
-            [0,0],
-            [2,0]
-        ]
-    };
+    state = initialState;
 
     componentDidMount(){
         setInterval(this.moveSnake, this.state.speed);
         document.onkeydown = this.onKeyDown;
     }
 
+    componentDidUpdate(){
+        this.checkInOutOfBorders();
+    }
     onKeyDown = (e) =>{
         e = e || window.event;
         switch (e.keyCode) {
@@ -71,18 +77,31 @@ class App extends Component{
         dots.push(head);
         dots.shift();
         this.setState({
-            snakeDots: dots
-        })
+                snakeDots: dots
+            })
+
     };
 
-    render() {
-    return (
-        <div className="game-area">
-            <Snake snakeDots ={this.state.snakeDots}/>
-            <SnakeFood dot={this.state.food}/>
-        </div>
-      );
+    checkInOutOfBorders(){
+        let head = this.state.snakeDots[this.state.snakeDots.length -1];
+        if(head[0] >= 100 || head[1] >= 100 || head[0]< 0 || head[1] < 0){
+            this.onGameOver();
+        }
     }
+
+    onGameOver(){
+        alert(`Game Over, Snake length is ${this.state.snakeDots.length}`);
+        this.setState(initialState)
+    }
+
+    render() {
+        return (
+            <div className="game-area">
+                <Snake snakeDots ={this.state.snakeDots}/>
+                <SnakeFood dot={this.state.food}/>
+            </div>
+          );
+        }
 }
 
 export default App;
